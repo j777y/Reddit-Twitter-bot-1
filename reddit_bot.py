@@ -11,7 +11,7 @@ consumer_key = 'MM9LNwfsMcJ2tpXds4Z4hMrFW'
 consumer_secret = 'pelYS7wzOoNotQUEasM0pAskiKsB6LWyyM3TO3koakzP8KUXtU'
 
 # without a proper key, this routine will default to Twitter's t.co shortening method
-google_api_key = "YOUR GOOGLE API KEY"  
+google_api_key = "YOUR GOOGLE API KEY"
 
 # Options to customize your bot
 subreddit_name = "python"                 #Replace with your desired subreddit name
@@ -27,13 +27,13 @@ def strip_title(title, tag_len):
 	elif char_remaining >= 3:
 		return title[:char_remaining-3] + "..."
 	else:
-		return ""	
+		return ""
 
 def tweet_creator(subreddit_info):
 	post_titles = []
 	post_links = []
 	post_ids = []
-	print "[bot] Getting posts from Reddit"
+	print ("[bot] Getting posts from Reddit")
 	for submission in subreddit_info.get_hot(limit=20):
 		post_id=submission.id
 		post_link=submission.url
@@ -47,9 +47,9 @@ def tweet_creator(subreddit_info):
 	return post_titles, post_links, post_ids
 
 def setup_connection_reddit(subreddit):
-	print "[bot] setting up connection with Reddit"
+	print ("[bot] setting up connection with Reddit")
 	r = praw.Reddit('yasoob_python reddit-twitter posting app'
-				'monitoring %s' %(subreddit)) 
+				'monitoring %s' %(subreddit))
 	subreddit = r.get_subreddit(subreddit)
 	return subreddit
 
@@ -60,9 +60,9 @@ def shorten(url):		   # Adjusted to include google api key authentication
 		googl_url = "https://www.googleapis.com/urlshortener/v1/url?key=%s" %(config_dict['google_api_key'])
 		r = requests.post(googl_url, data=json.dumps(payload), headers=headers)
 		url = json.loads(r.text)['id']
-		print "[bot] Generating short link using goo.gl"
+		print ("[bot] Generating short link using goo.gl")
 	except:
-		print "[bot] unverified google api key, defaulting to twitter's t.co shortner"
+		print ("[bot] unverified google api key, defaulting to twitter's t.co shortner")
 	return url
 
 def duplicate_check(id):
@@ -71,24 +71,24 @@ def duplicate_check(id):
 		for line in file.read().splitlines():
 			if post_id == line:
 				found = 1
-	file.close()			
+	file.close()
 	return found
 
 def add_id_to_file(id):
 	with open('posted_posts.txt', 'a') as file:
 		file.write(str(id) + "\n")
-	file.close()		
+	file.close()
 
 def main():
 	count=0
 	if len(tag_string) > 114:
-		print "[bot] Trailing string of tags is too long, please limit to <= 114 char"
+		print ("[bot] Trailing string of tags is too long, please limit to <= 114 char")
 		return
 	while count <= num_tweets_before_stopping:
 		subreddit = setup_connection_reddit(subreddit_name)
 		post_titles, post_links, post_ids = tweet_creator(subreddit)
 		tweeter(post_titles, post_links, post_ids)
-		print "[bot] waiting until next tweet"		
+		print ("[bot] waiting until next tweet")
 		time.sleep(tweet_delay*60)
 		count+=1
 
@@ -101,21 +101,21 @@ def tweeter(post_titles, post_links, post_ids):
 		found = duplicate_check(post_id)
 		if found == 0:
 			tweet_content=post_title+" "+shorten(post_link)+" "+tag_string
-			print "[bot] Posting this link on twitter"
-			print tweet_content.encode("utf-8")
+			print ("[bot] Posting this link on twitter")
+			print (tweet_content.encode("utf-8"))
 			try:
 				api.update_status(tweet_content)
-			except Exception, e:	
-				print  "[bot] Error triggered when sending tweet content to twitter:"
+			except Exception as exception:
+				print ("[bot] Error triggered when sending tweet content to twitter:")
 				try:
-					print "[Twitter] "+ e.args[0][0]['message']
+					print ("[Twitter] "+ e.args[0][0]['message'])
 				except:
-					print "[bot] Error outside of communication with Twitter"	
-				return	
+					print ("[bot] Error outside of communication with Twitter")
+				return
 			add_id_to_file(post_id)
 			return
 		else:
-			print "[bot] ID for post #%d already collected" %(index)
+			print ("[bot] ID for post #%d already collected" %(index))
 			index+=1
 
 if __name__ == '__main__':
