@@ -5,10 +5,10 @@ import tweepy
 import time
 
 # Twitter security codes
-access_token = 'YOUR ACCESS TOKEN'
-access_token_secret = 'YOUR ACCESS TOKEN SECRET'
-consumer_key = 'YOUR CONSUMER KEY'
-consumer_secret = 'YOUR CONSUMER SECRET'
+access_token = '701008448360546304-zXYldDmLvUekBBUuKKz8MYaM6sjsTTA'
+access_token_secret = 'LGJNMJ92J5kk8pChHbNCHMQ0gHf31EtUKEvUPwGLXrNk3'
+consumer_key = 'MM9LNwfsMcJ2tpXds4Z4hMrFW'
+consumer_secret = 'pelYS7wzOoNotQUEasM0pAskiKsB6LWyyM3TO3koakzP8KUXtU'
 
 # without a proper key, this routine will default to Twitter's t.co shortening method
 google_api_key = "YOUR GOOGLE API KEY"  
